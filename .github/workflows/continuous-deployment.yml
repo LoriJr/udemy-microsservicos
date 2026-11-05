@@ -37,7 +37,7 @@ jobs:
       run: mvn clean package
 
     - name: Build Exchange-Service
-      working-directory: ./exchange-server
+      working-directory: ./exchange-service
       run: mvn clean package
 
     - name: Docker Compose Builde
