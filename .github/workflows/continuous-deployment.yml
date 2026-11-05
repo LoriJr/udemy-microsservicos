@@ -48,11 +48,23 @@ jobs:
       run: |
         docker tag naming-server:0.0.1-SNAPSHOT ${{secrets.DOCKER_USERNAME}}/naming-server:latest
         docker tag naming-server:0.0.1-SNAPSHOT ${{secrets.DOCKER_USERNAME}}/naming-server:${{github.RUN_ID}}
+        docker tag api-gateway:0.0.1-SNAPSHOT ${{secrets.DOCKER_USERNAME}}/api-gateway:latest
+        docker tag api-gateway:0.0.1-SNAPSHOT ${{secrets.DOCKER_USERNAME}}/api-gateway:${{github.RUN_ID}}
+        docker tag book-service:0.0.1-SNAPSHOT ${{secrets.DOCKER_USERNAME}}/book-service:latest
+        docker tag book-service:0.0.1-SNAPSHOT ${{secrets.DOCKER_USERNAME}}/book-service:${{github.RUN_ID}}
+        docker tag exchange-service:0.0.1-SNAPSHOT ${{secrets.DOCKER_USERNAME}}/exchange-service:latest
+        docker tag exchange-service:0.0.1-SNAPSHOT ${{secrets.DOCKER_USERNAME}}/exchange-service:${{github.RUN_ID}}
 
 
     - name: Push Docker Images to Docker Hub
       run: |
         docker push ${{secrets.DOCKER_USERNAME}}/naming-server:latest
         docker push ${{secrets.DOCKER_USERNAME}}/naming-server:${{github.RUN_ID}}
+        docker push ${{secrets.DOCKER_USERNAME}}/api-gateway:latest
+        docker push ${{secrets.DOCKER_USERNAME}}/api-gateway:${{github.RUN_ID}}
+        docker push ${{secrets.DOCKER_USERNAME}}/book-service:latest
+        docker push ${{secrets.DOCKER_USERNAME}}/book-service:${{github.RUN_ID}}
+        docker push ${{secrets.DOCKER_USERNAME}}/exchange-service:latest
+        docker push ${{secrets.DOCKER_USERNAME}}/exchange-service:${{github.RUN_ID}}
 
     
