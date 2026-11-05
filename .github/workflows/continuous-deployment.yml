@@ -40,8 +40,8 @@ jobs:
       working-directory: ./exchange-service
       run: mvn clean package
 
-    - name: Docker Compose Builde
-      working-directory: .
+    - name: Docker Compose Build
+      working-directory: ./
       run: docker compose build
 
     
