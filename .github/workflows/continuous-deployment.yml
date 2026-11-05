@@ -28,4 +28,20 @@ jobs:
       working-directory: ./naming-server
       run: mvn spring-boot:build-image -DskipTests
 
+    - name: Build Api-Gateway
+      working-directory: ./api-gateway
+      run: mvn spring-boot:build-image -DskipTests
 
+    - name: Build Book-Service
+      working-directory: ./book-service
+      run: mvn clean package
+
+    - name: Build Exchange-Service
+      working-directory: ./exchange-server
+      run: mvn clean package
+
+    - name: Docker Compose Builde
+      working-directory: .
+      run: docker compose build
+
+    
