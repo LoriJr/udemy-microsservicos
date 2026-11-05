@@ -1,0 +1,134 @@
+
+name: naming-server
+services:
+
+  zipkin-server:
+    image: openzipkin/zipkin:3.5.1
+    ports:
+      - "9411:9411"
+    restart: always
+    networks:
+      - microservices-app
+
+  naming-server:
+    image: naming-server:0.0.1-SNAPSHOT
+    container_name: naming-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - microservices-app
+    ports:
+      - 8761:8761
+
+  api-gateway:
+    image: api-gateway:0.0.1-SNAPSHOT
+    #    container_name: api-gateway
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+    environment:
+      MANAGEMENT_TRACING_EXPORT_ZIPKIN_ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+    ports:
+      - "8765:8765"
+    networks:
+      - microservices-app
+    depends_on:
+      - naming-server
+      - zipkin-server
+
+  exchange-db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: exchange_service
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: 123456
+    networks:
+      - microservices-app
+    ports:
+      - "3300:3306"
+    volumes:
+      - exchange-db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  book-db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: book_service
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: 123456
+    networks:
+      - microservices-app
+    ports:
+      - "3301:3306"
+    volumes:
+      - book-db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  exchange-service:
+    image: exchange-service:0.0.1-SNAPSHOT
+    #    container_name: exchange-service
+    build:
+      context: ../exchange-service
+      dockerfile: Dockerfile
+    environment:
+      TZ: America/Sao_Paulo
+      MANAGEMENT_TRACING_EXPORT_ZIPKIN_ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+    ports:
+      - "8000:8000"
+
+    networks:
+      - microservices-app
+    depends_on:
+      - zipkin-server
+      - naming-server
+      - exchange-db
+
+  book-service:
+    image: book-service:0.0.1-SNAPSHOT
+#    container_name: book-service
+    build:
+      context: ../book-service
+      dockerfile: Dockerfile
+    environment:
+      TZ: America/Sao_Paulo
+      MANAGEMENT_TRACING_EXPORT_ZIPKIN_ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: 1.0
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+    ports:
+      - "8100:8100"
+    networks:
+      - microservices-app
+    depends_on:
+      - zipkin-server
+      - naming-server
+      - book-db
+
+networks:
+  microservices-app:
+    name: microservices-app
+    driver: bridge
+
+volumes:
+  exchange-db_data:
+  book-db_data:

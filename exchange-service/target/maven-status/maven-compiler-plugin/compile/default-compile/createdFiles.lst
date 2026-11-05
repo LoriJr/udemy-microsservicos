@@ -1,0 +1,8 @@
+com\viratech\controller\ExchangeController.class
+com\viratech\repository\ExchangeRepository.class
+com\viratech\model\Exchange.class
+com\viratech\Startup.class
+com\viratech\service\ExchangeService.class
+com\viratech\config\OpenApiConfiguration.class
+com\viratech\config\WebConfig.class
+com\viratech\environment\InstanceInformationService.class

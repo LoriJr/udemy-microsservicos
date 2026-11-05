@@ -1,0 +1,5 @@
+com\viratech\Startup.class
+com\viratech\config\DnsTestConfig.class
+com\viratech\config\OpenApiConfiguration.class
+com\viratech\filter\LoggingFilter.class
+com\viratech\config\CorsConfig.class
