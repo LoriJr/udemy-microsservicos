@@ -14,7 +14,7 @@ services:
     image: naming-server:0.0.1-SNAPSHOT
     container_name: naming-server
     build:
-      context: .
+      context: ./naming-server
       dockerfile: Dockerfile
     networks:
       - microservices-app
